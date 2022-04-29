@@ -7,7 +7,7 @@ END = date.today().strftime("%Y-%M-%D")
 
 st.title("Nairobi Forex Corner")
 
-stocks = ("AAPL", "GOOG")
+stocks = ("AAPL", "AMD", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "NVDA", "QCOM", "TSLA")
 stocks_select_box = st.selectbox("Select stock:", stocks)
 
 stocks_data = yf.Ticker(stocks_select_box)
