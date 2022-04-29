@@ -10,7 +10,7 @@ st.title("Nairobi Forex Corner")
 stocks = ("AAPL", "GOOG")
 stocks_select_box = st.selectbox("Select stock:", stocks)
 
-stocks_data = yf.Ticker(stocks)
+stocks_data = yf.Ticker(stocks_select_box)
 
 stocks_dataframe = stocks_data.history(period = "id", start = START, end = "2021-12-31")
 
