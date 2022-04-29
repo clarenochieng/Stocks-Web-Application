@@ -1,6 +1,6 @@
 import streamlit as st
 import yfinance as yf
-import plotly.graph_objects as go
+#import plotly.graph_objects as go
 from datetime import date
 
 START = "2015-01-01"
