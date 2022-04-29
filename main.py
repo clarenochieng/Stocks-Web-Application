@@ -1,10 +1,11 @@
 import streamlit as st
 import yfinance as yf
 #import plotly.graph_objects as go
-from datetime import date
+from datetime import date, datetime
 
+default_start_date = datetime.strptime("2020-01-01", "%Y-%m-%d")
 today = date.today().strftime("%Y-%M-%D")
-start_date = st.sidebar.date_input("Select start date: ", "2020-01-01")
+start_date = st.sidebar.date_input("Select start date: ", default_start_date)
 end_date = st.sidebar.date_input("Select end date: ", today)
 if start_date < end_date:
     st.sidebar.success(f'Start date: {start_date}')
