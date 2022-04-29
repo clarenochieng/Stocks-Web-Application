@@ -32,7 +32,7 @@ st.write(" *** ")
 st.write("### High Values")
 st.line_chart(stocks_dataframe["High"])
 
-st.write("### Close Values")
+st.write("### Low Values")
 st.line_chart(stocks_dataframe["Low"])
 
 st.write(" *** ")
