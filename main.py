@@ -21,8 +21,19 @@ stocks_data = yf.Ticker(stock_option)
 
 stocks_dataframe = stocks_data.history(period="id", start=start_date, end=end_date)
 
+st.write("### Open Values")
+st.line_chart(stocks_dataframe["Open"])
+
 st.write("### Close Values")
 st.line_chart(stocks_dataframe["Close"])
+
+st.write(" *** ")
+
+st.write("### High Values")
+st.line_chart(stocks_dataframe["High"])
+
+st.write("### Close Values")
+st.line_chart(stocks_dataframe["Low"])
 
 st.write(" *** ")
 
