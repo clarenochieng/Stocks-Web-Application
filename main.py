@@ -1,41 +1,63 @@
 import streamlit as st
 import yfinance as yf
-import datetime
+import datetime as dt
+from fbprophet import Prophet
+
+option = st.sidebar.selectbox("What do you want to do?", ("View historical data", "Predict future prices"))
 
 stocks = ("AAPL", "AMD", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "NVDA", "QCOM", "TSLA")
-stock_option = st.sidebar.selectbox("Select stock:", stocks)
+stock_option = st.selectbox("Select stock:", stocks)
 
-today = datetime.date.today()
-default_start_date = today - datetime.timedelta(days=365)
-start_date = st.sidebar.date_input("Select start date: ", default_start_date)
-end_date = st.sidebar.date_input("Select end date: ", today)
-if start_date <= end_date:
-    st.sidebar.success(f'Start date: {start_date}')
-    st.sidebar.success(f'End date: {end_date}')
+TODAY = dt.date.today()
+DEFAULT_START = TODAY - dt.timedelta(days=365)
+START = st.sidebar.date_input("Select start date: ", DEFAULT_START)
+END = st.sidebar.date_input("Select end date: ", TODAY)
+
+if START < END:
+    st.sidebar.success(f'Start date: {START}')
+    st.sidebar.success(f'End date: {END}')
 else:
     st.sidebar.error("End date cannot come before start date.")
 
 st.title("Nairobi Forex Corner")
 
-stocks_data = yf.Ticker(stock_option)
+data = yf.download(stock_option, START, TODAY).reset_index()
 
-stocks_dataframe = stocks_data.history(period="id", start=start_date, end=end_date)
+data[["ds", "y"]] = data[["Date", "Close"]]
 
-st.header("Open")
-st.line_chart(stocks_dataframe["Open"])
+model = Prophet()
 
-st.write("### Close Values")
-st.line_chart(stocks_dataframe["Close"])
+model.fit(data)
 
-st.write(" *** ")
+future = model.make_future_dataframe(periods = 365)
 
-st.write("### High Values")
-st.line_chart(stocks_dataframe["High"])
+forecast = model.predict(future)
 
-st.write("### Low Values")
-st.line_chart(stocks_dataframe["Low"])
+if option == "View historical data":
 
-st.write(" *** ")
+    stocks_data = yf.Ticker(stock_option)
 
-st.write("### Volume Chart")
-st.line_chart(stocks_dataframe["Volume"])
+    stocks_dataframe = stocks_data.history(period="id", start=START, end=END)
+
+    st.header("Open")
+    st.line_chart(stocks_dataframe["Open"])
+
+    st.header("Close")
+    st.line_chart(stocks_dataframe["Close"])
+
+    st.write(" *** ")
+
+    st.write("### High Values")
+    st.line_chart(stocks_dataframe["High"])
+
+    st.write("### Low Values")
+    st.line_chart(stocks_dataframe["Low"])
+
+    st.write(" *** ")
+
+    st.write("### Volume Chart")
+    st.line_chart(stocks_dataframe["Volume"])
+
+elif option == "Predict future prices":
+    fig = model.plot(forecast)
+    st.write(fig)
