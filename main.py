@@ -38,7 +38,7 @@ data_ = data[["Date", "Close"]]
 
 data_.columns = ["ds", "y"]
 
-model = NeuralProphet()
+model = NeuralProphet(epochs = 100)
 
 model.fit(data_)
 
