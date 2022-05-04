@@ -6,14 +6,6 @@ from neuralprophet import NeuralProphet
 
 TODAY = dt.date.today()
 DEFAULT_START = TODAY - dt.timedelta(days=365)
-START = st.sidebar.date_input("Select start date: ", DEFAULT_START)
-END = st.sidebar.date_input("Select end date: ", TODAY)
-
-if START < END:
-    st.sidebar.success(f'Start date: {START}')
-    st.sidebar.success(f'End date: {END}')
-else:
-    st.sidebar.error("End date cannot come before start date.")
 
 
 def load_data(val):
@@ -23,6 +15,15 @@ def load_data(val):
 
 
 feature_option = st.sidebar.selectbox("Select a feature", ("View historical data", "Predict future prices"))
+
+START = st.sidebar.date_input("Select start date: ", DEFAULT_START)
+END = st.sidebar.date_input("Select end date: ", TODAY)
+
+if START < END:
+    st.sidebar.success(f'Start date: {START}')
+    st.sidebar.success(f'End date: {END}')
+else:
+    st.sidebar.error("End date cannot come before start date.")
 
 stocks = ("AAPL", "AMD", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "NVDA", "QCOM", "TSLA")
 stock_option = st.selectbox("Select stock:", stocks)
@@ -39,7 +40,7 @@ data_.columns = ["ds", "y"]
 
 model = NeuralProphet()
 
-model.fit(data_)
+model.fit(data_, epochs = 100)
 
 future = model.make_future_dataframe(data_, periods=365)
 
