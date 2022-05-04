@@ -40,7 +40,7 @@ data_.columns = ["ds", "y"]
 
 model = NeuralProphet()
 
-model.fit(data_, epochs = 100)
+model.fit(data_)
 
 future = model.make_future_dataframe(data_, periods=365)
 
