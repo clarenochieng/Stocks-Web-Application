@@ -3,10 +3,6 @@ import yfinance as yf
 import datetime as dt
 from neuralprophet import NeuralProphet
 
-option = st.sidebar.selectbox("What do you want to do?", ("View historical data", "Predict future prices"))
-
-stocks = ("AAPL", "AMD", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "NVDA", "QCOM", "TSLA")
-stock_option = st.selectbox("Select stock:", stocks)
 
 TODAY = dt.date.today()
 DEFAULT_START = TODAY - dt.timedelta(days=365)
@@ -19,27 +15,41 @@ if START < END:
 else:
     st.sidebar.error("End date cannot come before start date.")
 
+
+def load_data(val):
+    df = yf.download(val, START, TODAY)
+    df = df.reset_index()
+    return df
+
+
+feature_option = st.sidebar.selectbox("Select a feature", ("View historical data", "Predict future prices"))
+
+stocks = ("AAPL", "AMD", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "NVDA", "QCOM", "TSLA")
+stock_option = st.selectbox("Select stock:", stocks)
+
 st.title("Nairobi Forex Corner")
 
-data = yf.download(stock_option, START, TODAY).reset_index()
+data = load_data(stock_option)
+
+data.head()
 
 data_ = data[["Date", "Close"]]
 
-data_.columns = [["ds", "y"]]
+data_.columns = ["ds", "y"]
 
 model = NeuralProphet()
 
-model.fit(data_, freq = "D")
+model.fit(data_)
 
-future = model.make_future_dataframe(data_, periods = 365)
+future = model.make_future_dataframe(data_, periods=365)
 
 forecast = model.predict(future)
 
-if option == "View historical data":
+if feature_option == "View historical data":
 
     stocks_data = yf.Ticker(stock_option)
 
-    stocks_dataframe = stocks_data.history(period="id", start=START, end=END)
+    stocks_dataframe = stocks_data.history(period='id', start=START, end=END)
 
     st.header("Open")
     st.line_chart(stocks_dataframe["Open"])
@@ -49,17 +59,17 @@ if option == "View historical data":
 
     st.write(" *** ")
 
-    st.write("### High Values")
+    st.header("High")
     st.line_chart(stocks_dataframe["High"])
 
-    st.write("### Low Values")
+    st.header("Low")
     st.line_chart(stocks_dataframe["Low"])
 
     st.write(" *** ")
 
-    st.write("### Volume Chart")
+    st.header("Volume")
     st.line_chart(stocks_dataframe["Volume"])
 
-elif option == "Predict future prices":
+elif feature_option == "Predict future prices":
     fig = model.plot(forecast)
     st.write(fig)
