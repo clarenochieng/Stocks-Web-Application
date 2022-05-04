@@ -1,7 +1,7 @@
 import streamlit as st
 import yfinance as yf
 import datetime as dt
-from fbprophet import Prophet
+from neuralprophet import NeuralProphet
 
 option = st.sidebar.selectbox("What do you want to do?", ("View historical data", "Predict future prices"))
 
@@ -25,7 +25,7 @@ data = yf.download(stock_option, START, TODAY).reset_index()
 
 data[["ds", "y"]] = data[["Date", "Close"]]
 
-model = Prophet()
+model = NeuralProphet()
 
 model.fit(data)
 
