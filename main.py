@@ -27,9 +27,9 @@ data[["ds", "y"]] = data[["Date", "Close"]]
 
 model = NeuralProphet()
 
-model.fit(data)
+model.fit(data, freq = "D", epochs = 1000)
 
-future = model.make_future_dataframe(periods = 365)
+future = model.make_future_dataframe(data, periods = 365)
 
 forecast = model.predict(future)
 
