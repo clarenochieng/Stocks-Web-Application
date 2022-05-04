@@ -23,13 +23,15 @@ st.title("Nairobi Forex Corner")
 
 data = yf.download(stock_option, START, TODAY).reset_index()
 
-data[["ds", "y"]] = data[["Date", "Close"]]
+data_ = data[["Date", "Close"]]
+
+data_.columns = [["ds", "y"]]
 
 model = NeuralProphet()
 
-model.fit(data, freq = "D", epochs = 1000)
+model.fit(data_, freq = "D", epochs = 1000)
 
-future = model.make_future_dataframe(data, periods = 365)
+future = model.make_future_dataframe(data_, periods = 365)
 
 forecast = model.predict(future)
 
