@@ -29,7 +29,7 @@ data_.columns = [["ds", "y"]]
 
 model = NeuralProphet()
 
-model.fit(data_, freq = "D", epochs = 1000)
+model.fit(data_, freq = "D")
 
 future = model.make_future_dataframe(data_, periods = 365)
 
