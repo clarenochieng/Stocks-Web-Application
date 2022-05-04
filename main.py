@@ -5,7 +5,7 @@ from neuralprophet import NeuralProphet
 
 
 TODAY = dt.date.today()
-DEFAULT_START = TODAY - dt.timedelta(days=365)
+DEFAULT_START = TODAY - dt.timedelta(days=3650)
 
 
 def load_data(val):
