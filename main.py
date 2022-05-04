@@ -42,7 +42,7 @@ model = NeuralProphet()
 
 model.fit(data_)
 
-future = model.make_future_dataframe(data_, periods=365)
+future = model.make_future_dataframe(data_, periods=30)
 
 forecast = model.predict(future)
 
