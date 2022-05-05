@@ -5,7 +5,7 @@ from neuralprophet import NeuralProphet
 
 
 TODAY = dt.date.today()
-DEFAULT_START = TODAY - dt.timedelta(days=3650)
+DEFAULT_START = TODAY - dt.timedelta(days=365)
 
 
 def load_display_data(val):
@@ -22,8 +22,7 @@ def display(val):
     st.header(val)
     st.line_chart(stocks_dataframe[val])
 
-
-feature_option = st.sidebar.selectbox("Select a feature", ("View historical data", "Predict future prices"))
+feature_option = st.sidebar.selectbox("Select a feature: ", ("View historical data", "Predict future prices"))
 
 START = st.sidebar.date_input("Select start date: ", DEFAULT_START)
 END = st.sidebar.date_input("Select end date: ", TODAY)
@@ -32,19 +31,19 @@ if START < END:
     st.sidebar.success(f'Start date: {START}')
     st.sidebar.success(f'End date: {END}')
 else:
-    st.sidebar.error("End date cannot come before start date.")
-
-stocks = ("AAPL", "AMD", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "NVDA", "QCOM", "TSLA")
-
-stock_option = st.selectbox("Select stock:", stocks)
-
-charts = ("Open", "Close", "High", "Low", "Volume")
-
-chart_option = st.selectbox("Select chart:", charts)    
+    st.sidebar.error("Start date has to come before end date.")
 
 st.title("Nairobi Forex Corner")
 
+stocks = ("AAPL", "AMD", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "NVDA", "QCOM", "TSLA")
+
+stock_option = st.selectbox("Select stock:", stocks)   
+
 if feature_option == "View historical data":
+
+    charts = ("Open", "Close", "High", "Low", "Volume")
+
+    chart_option = st.selectbox("Select chart:", charts) 
 
     stocks_data = yf.Ticker(stock_option)
 
@@ -66,7 +65,7 @@ elif feature_option == "Predict future prices":
 
     data_.columns = ["ds", "y"]
 
-    model = NeuralProphet(epochs = 1000)
+    model = NeuralProphet()
 
     model.fit(data_)
 
