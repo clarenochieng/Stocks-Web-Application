@@ -38,15 +38,17 @@ stocks = ("AAPL", "AMD", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "NVDA", "QCOM", "
 
 stock_option = st.selectbox("Select stock:", stocks)
 
-stocks_data = yf.Ticker(stock_option)
+charts = ("Open", "Close", "High", "Low", "Volume")
+
+chart_option = st.selectbox("Select chart:", charts)    
 
 st.title("Nairobi Forex Corner")
 
 if feature_option == "View historical data":
 
-    stocks_dataframe = stocks_data.history(period='id', start=START, end=END)
+    stocks_data = yf.Ticker(stock_option)
 
-    chart_option = st.selectbox("Select chart:", ("Open", "Close", "High", "Low", "Volume"))    
+    stocks_dataframe = stocks_data.history(period='id', start=START, end=END)
 
     display(chart_option)
 
@@ -54,7 +56,9 @@ if feature_option == "View historical data":
 
 elif feature_option == "Predict future prices":
 
-    stocks_dataframe = stocks_data.history(period='id')
+    stocks_data = yf.Ticker(stock_option)
+
+    stocks_dataframe = stocks_data.history(period='id', start = DEFAULT_START, end = END)
 
     data = load_prediction_data(stock_option)
 
