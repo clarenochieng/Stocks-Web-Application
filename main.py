@@ -8,10 +8,19 @@ TODAY = dt.date.today()
 DEFAULT_START = TODAY - dt.timedelta(days=3650)
 
 
-def load_data(val):
+def load_display_data(val):
     df = yf.download(val, START, TODAY)
     df = df.reset_index()
     return df
+
+def load_prediction_data(val):
+    df = yf.download(val)
+    df = df.reset_index()
+    return df
+
+def display(val):
+    st.header(val)
+    st.line_chart(stocks_dataframe[val])
 
 
 feature_option = st.sidebar.selectbox("Select a feature", ("View historical data", "Predict future prices"))
@@ -26,51 +35,41 @@ else:
     st.sidebar.error("End date cannot come before start date.")
 
 stocks = ("AAPL", "AMD", "AMZN", "FB", "GOOG", "MSFT", "NFLX", "NVDA", "QCOM", "TSLA")
+
 stock_option = st.selectbox("Select stock:", stocks)
+
+stocks_data = yf.Ticker(stock_option)
 
 st.title("Nairobi Forex Corner")
 
-data = load_data(stock_option)
-
-data.head()
-
-data_ = data[["Date", "Close"]]
-
-data_.columns = ["ds", "y"]
-
-model = NeuralProphet(epochs = 100)
-
-model.fit(data_)
-
-future = model.make_future_dataframe(data_, periods=30)
-
-forecast = model.predict(future)
-
 if feature_option == "View historical data":
-
-    stocks_data = yf.Ticker(stock_option)
 
     stocks_dataframe = stocks_data.history(period='id', start=START, end=END)
 
-    st.header("Open")
-    st.line_chart(stocks_dataframe["Open"])
+    chart_option = st.selectbox("Select chart:", ("Open", "Close", "High", "Low", "Volume"))    
 
-    st.header("Close")
-    st.line_chart(stocks_dataframe["Close"])
+    display(chart_option)
 
     st.write(" *** ")
-
-    st.header("High")
-    st.line_chart(stocks_dataframe["High"])
-
-    st.header("Low")
-    st.line_chart(stocks_dataframe["Low"])
-
-    st.write(" *** ")
-
-    st.header("Volume")
-    st.line_chart(stocks_dataframe["Volume"])
 
 elif feature_option == "Predict future prices":
+
+    stocks_dataframe = stocks_data.history(period='id')
+
+    data = load_prediction_data(stock_option)
+
+    data_ = data[["Date", "Close"]]
+
+    data_.columns = ["ds", "y"]
+
+    model = NeuralProphet(epochs = 1000)
+
+    model.fit(data_)
+
+    future = model.make_future_dataframe(data_, periods=30)
+
+    forecast = model.predict(future)
+
     fig = model.plot(forecast)
+
     st.write(fig)
