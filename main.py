@@ -20,7 +20,8 @@ def load_prediction_data(val):
     return df
 
 def display(val):
-    st.header(val, ": ", "stock_option", sep = "")
+    title_ = val + ": " + stock_option
+    st.header(title_)
     st.line_chart(stocks_dataframe[val])
 
 feature_option = st.sidebar.selectbox("Select a feature: ", ("View historical data", "Predict future prices"))
