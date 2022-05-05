@@ -1,3 +1,4 @@
+from matplotlib.pyplot import xlabel, ylabel
 import streamlit as st
 import yfinance as yf
 import datetime as dt
@@ -19,7 +20,7 @@ def load_prediction_data(val):
     return df
 
 def display(val):
-    st.header(val)
+    st.header(val, ": ", "stock_option", sep = "")
     st.line_chart(stocks_dataframe[val])
 
 feature_option = st.sidebar.selectbox("Select a feature: ", ("View historical data", "Predict future prices"))
@@ -73,6 +74,10 @@ elif feature_option == "Predict future prices":
 
     forecast = model.predict(future)
 
-    fig = model.plot(forecast)
+    fig = model.plot(forecast, xlabel = "Date", ylabel = "Predicted Value")
 
     st.write(fig)
+
+    st.write(" *** ")
+
+    st.write("**Disclaimer**: This is not financial advice.")
