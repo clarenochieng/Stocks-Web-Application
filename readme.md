@@ -1,0 +1,1 @@
+This is a data science project that monitors stock data for 10 selected stocks. Also included is a prediction tool that may used to project future prices.
